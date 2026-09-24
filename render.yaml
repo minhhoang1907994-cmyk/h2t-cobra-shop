@@ -1,0 +1,47 @@
+# Render Blueprint — https://render.com/docs/blueprint-spec
+# Secrets marked `sync: false` must be entered in the Render dashboard when creating the Blueprint.
+services:
+  - type: web
+    name: h2t-cobra-shop
+    runtime: node
+    plan: free
+    region: singapore
+    branch: main
+    autoDeploy: true
+    # Free plan has no preDeployCommand, so migrations run during the build.
+    # Migrations must run before `next build` because static pages query the database at build time.
+    buildCommand: corepack pnpm install --frozen-lockfile && corepack pnpm payload migrate && corepack pnpm build
+    startCommand: corepack pnpm start
+    healthCheckPath: /api/globals/site-settings
+    envVars:
+      - key: NODE_VERSION
+        value: "22"
+      - key: COREPACK_ENABLE_DOWNLOAD_PROMPT
+        value: "0"
+
+      # Neon production database — pooled connection string (host contains "-pooler")
+      - key: DATABASE_URL
+        sync: false
+
+      # Public URL of this service, no trailing slash (e.g. https://h2t-cobra-shop.onrender.com)
+      - key: NEXT_PUBLIC_SERVER_URL
+        sync: false
+
+      - key: PAYLOAD_SECRET
+        generateValue: true
+      - key: CRON_SECRET
+        generateValue: true
+      - key: PREVIEW_SECRET
+        generateValue: true
+
+      # Backblaze B2 (S3-compatible)
+      - key: S3_ENDPOINT
+        value: https://s3.us-east-005.backblazeb2.com
+      - key: S3_REGION
+        value: us-east-005
+      - key: S3_BUCKET
+        sync: false
+      - key: S3_ACCESS_KEY_ID
+        sync: false
+      - key: S3_SECRET_ACCESS_KEY
+        sync: false

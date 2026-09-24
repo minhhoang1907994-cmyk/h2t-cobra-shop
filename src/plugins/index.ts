@@ -3,6 +3,7 @@ import { nestedDocsPlugin } from '@payloadcms/plugin-nested-docs'
 import { redirectsPlugin } from '@payloadcms/plugin-redirects'
 import { seoPlugin } from '@payloadcms/plugin-seo'
 import { searchPlugin } from '@payloadcms/plugin-search'
+import { s3Storage } from '@payloadcms/storage-s3'
 import { Plugin } from 'payload'
 import { revalidateRedirects } from '@/hooks/revalidateRedirects'
 import { GenerateTitle, GenerateURL } from '@payloadcms/plugin-seo/types'
@@ -10,17 +11,16 @@ import { FixedToolbarFeature, HeadingFeature, lexicalEditor } from '@payloadcms/
 import { searchFields } from '@/search/fieldOverrides'
 import { beforeSyncWithSearch } from '@/search/beforeSync'
 
-import { Page, Post } from '@/payload-types'
+import { Page, Post, Product } from '@/payload-types'
+import { getDocPath, SITE_NAME } from '@/utilities/getDocPath'
 import { getServerSideURL } from '@/utilities/getURL'
 
-const generateTitle: GenerateTitle<Post | Page> = ({ doc }) => {
-  return doc?.title ? `${doc.title} | Payload Website Template` : 'Payload Website Template'
+const generateTitle: GenerateTitle<Post | Page | Product> = ({ doc }) => {
+  return doc?.title ? `${doc.title} | ${SITE_NAME}` : SITE_NAME
 }
 
-const generateURL: GenerateURL<Post | Page> = ({ doc }) => {
-  const url = getServerSideURL()
-
-  return doc?.slug ? `${url}/${doc.slug}` : url
+const generateURL: GenerateURL<Post | Page | Product> = ({ doc, collectionConfig }) => {
+  return `${getServerSideURL()}${getDocPath(collectionConfig?.slug, doc?.slug)}`
 }
 
 export const plugins: Plugin[] = [
@@ -87,6 +87,27 @@ export const plugins: Plugin[] = [
       fields: ({ defaultFields }) => {
         return [...defaultFields, ...searchFields]
       },
+    },
+  }),
+  // Store media on Backblaze B2 (S3-compatible). Disabled when S3_BUCKET is not set,
+  // in which case uploads fall back to the local public/media directory.
+  s3Storage({
+    enabled: Boolean(process.env.S3_BUCKET),
+    collections: {
+      media: true,
+    },
+    bucket: process.env.S3_BUCKET || '',
+    config: {
+      endpoint: process.env.S3_ENDPOINT,
+      region: process.env.S3_REGION,
+      credentials: {
+        accessKeyId: process.env.S3_ACCESS_KEY_ID || '',
+        secretAccessKey: process.env.S3_SECRET_ACCESS_KEY || '',
+      },
+      forcePathStyle: true,
+      // B2 does not support the default flexible checksums of recent AWS SDK versions
+      requestChecksumCalculation: 'WHEN_REQUIRED',
+      responseChecksumValidation: 'WHEN_REQUIRED',
     },
   }),
 ]

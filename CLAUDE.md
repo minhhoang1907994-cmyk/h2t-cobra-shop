@@ -17,17 +17,21 @@ Người quản trị nội dung là người không biết code → admin UI ph
 
 > Version lấy từ `package.json` sau khi scaffold (2026-09-24). Template `website` có sẵn collections `pages`, `posts`, `categories`, `media`, `users` và các plugin SEO, search, redirects, form-builder, nested-docs — cần điều chỉnh theo Domain Model bên dưới.
 
-## Domain Model (dự kiến)
+## Domain Model
 
 | Collection / Global | Mục đích | Field chính |
 |---|---|---|
-| `products` | Sản phẩm / combo | `title`, `slug`, `category` (rel), `price`, `compareAtPrice`, `colors` (array: name, hex, image), `gallery` (upload[]), `videoUrls` (TikTok/Reels/YouTube), `shortDescription`, `content` (richText), `features` (array), `facebookUrl`, `shopeeUrl`, `isFeatured`, `_status` (draft/published) |
-| `categories` | Danh mục (Biển cả, Khủng long, Combo...) | `title`, `slug`, `image`, `order` |
-| `posts` | Blog / tin tức | `title`, `slug`, `coverImage`, `content`, `publishedAt`, `_status` |
-| `media` | Ảnh upload (lưu trên B2) | `alt` (bắt buộc), `sizes` (thumbnail/card/og) |
-| `users` | Tài khoản admin (auth) | `email`, `name`, `role` (admin/editor) |
-| Global `site-settings` | Cấu hình chung | logo, fanpage URL, Shopee shop URL, hotline/Zalo, hashtags, SEO mặc định |
-| Global `homepage` | Nội dung trang chủ | banner slides, featured products, featured categories |
+| `products` | Sản phẩm / combo | `title`, `slug`, `gallery` (upload[], bắt buộc), `shortDescription`, `features[]`, `content` (richText), `videoUrls[]`, `price`, `compareAtPrice`, `priceNote`, `colors[]` (name, hex, image), `shopeeUrl`, `facebookUrl`, `meta` (SEO), `categories`, `isFeatured`, `publishedAt`, `_status` |
+| `categories` | Danh mục (Biển cả, Khủng long, Combo...) — dùng chung cho products và posts | `title`, `slug`, `image`, `sortOrder` |
+| `posts` | Blog / tin tức (từ template) | `title`, `slug`, `heroImage`, `content`, `categories`, `meta`, `publishedAt`, `_status` |
+| `pages` | Trang dựng bằng block (từ template). Trang chủ = page có slug `home` | `hero`, `layout` (blocks: `productGrid`, `cta`, `content`, `mediaBlock`, `archive`, `formBlock`) |
+| `media` | Ảnh upload (B2 khi có `S3_BUCKET`, ngược lại `public/media`) | `alt`, `caption`, `sizes` |
+| `users` | Tài khoản admin (auth) | `email`, `name` — chưa có phân quyền role |
+| Global `site-settings` | Cài đặt chung | `siteName`, `logo`, `tagline`, `facebookUrl`, `messengerUrl`, `shopeeUrl`, `tiktokUrl`, `phone`, `zalo`, `address`, `hashtags` |
+| Global `header` / `footer` | Menu (từ template) | `navItems` |
+
+Route frontend: `/san-pham`, `/san-pham/[slug]`, `/danh-muc/[slug]`, `/posts`, `/posts/[slug]`, `/[slug]` (pages), `/products-sitemap.xml`.
+Nút "Đặt qua Facebook" dùng `product.facebookUrl` → fallback `site-settings.messengerUrl` → `site-settings.facebookUrl`.
 
 ## Project Conventions
 
@@ -35,23 +39,27 @@ Người quản trị nội dung là người không biết code → admin UI ph
 - Components, types, interfaces: PascalCase (`ProductCard`, `ProductGallery`)
 - Functions, variables, field names Payload: camelCase (`getProductBySlug`, `facebookUrl`)
 - Constants: SCREAMING_SNAKE_CASE (`REVALIDATE_SECONDS`)
-- Files/folders: kebab-case (`product-card.tsx`, `site-settings.ts`); riêng config collection: PascalCase (`Products.ts`) theo template Payload
+- Files/folders (theo template Payload): component/collection/global dùng thư mục PascalCase + `index.tsx`/`config.ts` (`components/ProductCard/index.tsx`, `collections/Products/index.ts`, `SiteSettings/config.ts`); utility/hook dùng camelCase (`getDocPath.ts`, `revalidateProduct.ts`)
+- Route folder frontend: tiếng Việt không dấu, kebab-case (`san-pham`, `danh-muc`)
 - Collection/global slug: kebab-case số nhiều (`products`, `site-settings`)
-- URL route: kebab-case, dùng `slug` không dấu (`/san-pham/combo-10-bien-ca`, `/danh-muc/bien-ca`, `/blog/...`)
+- URL route: kebab-case, dùng `slug` không dấu (`/san-pham/combo-10-bien-ca`, `/danh-muc/bien-ca`). Tạo URL của document qua `getDocPath()` (`src/utilities/getDocPath.ts`), không nối chuỗi tay
 
 ### Architecture
 ```
 src/
 ├── app/
-│   ├── (frontend)/        # Site public: trang chủ, danh mục, sản phẩm, blog
+│   ├── (frontend)/        # Site public: trang chủ, san-pham, danh-muc, posts, sitemaps
 │   └── (payload)/         # Admin UI + REST/GraphQL API do Payload sinh (không sửa tay)
-├── collections/           # Payload collection configs (Products.ts, Categories.ts, ...)
-├── globals/               # Payload global configs (SiteSettings.ts, Homepage.ts)
-├── access/                # Access control functions (isAdmin, isAdminOrEditor, publishedOnly)
-├── hooks/                 # Payload hooks (slugify, revalidate cache sau khi publish)
-├── components/            # React components dùng cho frontend
-├── lib/                   # Data fetching (Payload Local API), utils
-├── payload.config.ts
+├── collections/           # Collection configs (Products/, Pages/, Posts/, Categories.ts, Media.ts, Users/)
+├── SiteSettings/, Header/, Footer/   # Global: config.ts + hooks/ + component render
+├── blocks/                # Layout blocks cho pages (ProductGridBlock/, ArchiveBlock/, ...) — config.ts + Component.tsx
+├── access/                # Access control functions (authenticated, authenticatedOrPublished, anyone)
+├── hooks/                 # Hook dùng chung (revalidate redirects...); hook riêng đặt trong collections/<Name>/hooks/
+├── components/            # React components (ProductCard, ProductGrid, ProductGallery, BuyButtons, ...)
+├── fields/                # Field dùng chung (link, defaultLexical)
+├── plugins/index.ts       # SEO, search, redirects, form-builder, nested-docs, s3Storage (B2)
+├── utilities/             # getDocPath, formatPrice, validateUrl, generateMeta, getGlobals...
+├── payload.config.ts      # i18n admin: vi (mặc định), en
 └── payload-types.ts       # Auto-generated — KHÔNG sửa tay
 ```
 - Frontend đọc data bằng **Payload Local API** (`getPayload({ config })`) trong Server Components — không gọi REST API qua HTTP từ chính app.
@@ -64,17 +72,18 @@ src/
 - PK: `id` (serial, mặc định của db-postgres).
 - Timestamp: `createdAt`/`updatedAt` (Payload tự quản lý).
 - Xóa: dùng Drafts/`_status` để ẩn sản phẩm thay vì xóa cứng khi có thể.
-- Neon: runtime dùng **pooled connection string** (`-pooler`); migration dùng **direct connection string**.
+- Neon: `DATABASE_URL` dùng **pooled connection string** (`-pooler`). Khi chạy migration nếu gặp lỗi với pooler thì chạy tạm với direct connection string.
 
 ### Media (Backblaze B2)
-- Upload qua collection `media`, `@payloadcms/storage-s3` trỏ endpoint `https://s3.<region>.backblazeb2.com`.
-- Field `alt` bắt buộc (SEO + a11y).
-- Khai báo `imageSizes` (thumbnail, card, og 1200x630) để frontend không load ảnh gốc.
-- Hiển thị ảnh bằng `next/image`; domain B2/CDN phải khai báo trong `images.remotePatterns` của `next.config`.
+- Upload qua collection `media`; plugin `s3Storage` (`src/plugins/index.ts`) chỉ bật khi có `S3_BUCKET`, endpoint `https://s3.<region>.backblazeb2.com`.
+- Ảnh vẫn được phục vụ qua `/api/media/file/...` (Payload proxy từ B2) → bucket để private được, không cần khai báo `remotePatterns`. Nếu sau này đặt CDN/public URL thì phải cấu hình thêm `generateFileURL` + `remotePatterns`.
+- Field `alt` hiện chưa bắt buộc (template) — nhắc người nhập điền alt.
+- `imageSizes` có sẵn: thumbnail, square, small, medium, large, xlarge, og (1200x630).
 
 ### Access Control
-- `products`, `categories`, `posts`: public chỉ đọc bản `published`; tạo/sửa: admin + editor; xóa: admin.
-- `users`: chỉ admin quản lý.
+- `products`, `posts`, `pages`: public chỉ đọc bản `published` (`authenticatedOrPublished`); tạo/sửa/xóa: mọi user đã đăng nhập.
+- `categories`, `media`: public đọc; ghi: user đã đăng nhập.
+- Chưa có phân quyền role (admin/editor) — nếu cần phải thêm field `role` vào `users` và access function riêng.
 - Không mở đăng ký tài khoản public.
 
 ### API Response Format
@@ -103,7 +112,6 @@ Không tự viết API public. Nếu cần custom endpoint (Payload `endpoints` 
 ## Environment Variables
 ```
 DATABASE_URL=            # Neon pooled connection string
-DATABASE_URL_DIRECT=     # Neon direct connection (dùng cho migrate)
 PAYLOAD_SECRET=
 NEXT_PUBLIC_SERVER_URL=
 S3_ENDPOINT=             # https://s3.<region>.backblazeb2.com
@@ -111,11 +119,13 @@ S3_REGION=
 S3_BUCKET=
 S3_ACCESS_KEY_ID=        # B2 application key ID
 S3_SECRET_ACCESS_KEY=    # B2 application key
+CRON_SECRET=
+PREVIEW_SECRET=
 ```
 
 ## Lệnh thường dùng
 ```bash
-pnpm install
+corepack pnpm install             # hoặc `pnpm ...` nếu đã chạy `corepack enable pnpm` (cần quyền admin)
 pnpm dev                          # http://localhost:3000, admin: /admin
 pnpm build && pnpm start
 pnpm generate:types               # Sinh lại payload-types.ts sau khi sửa collection
