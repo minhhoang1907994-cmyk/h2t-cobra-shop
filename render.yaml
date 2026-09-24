@@ -1,17 +1,24 @@
 # Render Blueprint — https://render.com/docs/blueprint-spec
 # Secrets marked `sync: false` must be entered in the Render dashboard when creating the Blueprint.
 services:
+  # Payload CMS: admin panel + REST API. Allowed to sleep on the free plan,
+  # only editors wait for it to wake up.
   - type: web
-    name: h2t-cobra-shop
+    name: h2t-cobra-cms
     runtime: node
     plan: free
     region: singapore
     branch: main
     autoDeploy: true
+    buildFilter:
+      paths:
+        - apps/cms/**
+        - package.json
+        - pnpm-lock.yaml
+        - pnpm-workspace.yaml
     # Free plan has no preDeployCommand, so migrations run during the build.
-    # Migrations must run before `next build` because static pages query the database at build time.
-    buildCommand: corepack pnpm install --frozen-lockfile && corepack pnpm payload migrate && corepack pnpm build
-    startCommand: corepack pnpm start
+    buildCommand: corepack pnpm install --frozen-lockfile --filter cms && corepack pnpm --filter cms payload migrate && corepack pnpm --filter cms build
+    startCommand: corepack pnpm --filter cms start
     healthCheckPath: /api/globals/site-settings
     envVars:
       - key: NODE_VERSION
@@ -22,19 +29,20 @@ services:
       # Neon production database — pooled connection string (host contains "-pooler")
       - key: DATABASE_URL
         sync: false
-
-      # Public URL of this service, no trailing slash (e.g. https://h2t-cobra-shop.onrender.com)
-      - key: NEXT_PUBLIC_SERVER_URL
-        sync: false
-
       - key: PAYLOAD_SECRET
         generateValue: true
-      - key: CRON_SECRET
-        generateValue: true
-      - key: PREVIEW_SECRET
-        generateValue: true
 
-      # Backblaze B2 (S3-compatible)
+      # Public URL of this CMS service, no trailing slash (e.g. https://h2t-cobra-cms.onrender.com)
+      - key: NEXT_PUBLIC_SERVER_URL
+        sync: false
+      # Public URL of the static web site, used for SEO previews in the admin
+      - key: WEB_URL
+        sync: false
+      # Deploy Hook URL of the static web site (Render dashboard > h2t-cobra-shop > Settings > Deploy Hook)
+      - key: WEB_DEPLOY_HOOK_URL
+        sync: false
+
+      # Backblaze B2 private bucket (S3-compatible)
       - key: S3_ENDPOINT
         value: https://s3.us-east-005.backblazeb2.com
       - key: S3_REGION
@@ -44,4 +52,31 @@ services:
       - key: S3_ACCESS_KEY_ID
         sync: false
       - key: S3_SECRET_ACCESS_KEY
+        sync: false
+
+  # Public web site: static HTML generated from the CMS API at build time. Never sleeps.
+  - type: web
+    name: h2t-cobra-shop
+    runtime: static
+    branch: main
+    autoDeploy: true
+    buildFilter:
+      paths:
+        - apps/web/**
+        - apps/cms/src/payload-types.ts
+        - package.json
+        - pnpm-lock.yaml
+        - pnpm-workspace.yaml
+    buildCommand: corepack pnpm install --frozen-lockfile --filter web && corepack pnpm --filter web build
+    staticPublishPath: apps/web/out
+    envVars:
+      - key: NODE_VERSION
+        value: "22"
+      - key: COREPACK_ENABLE_DOWNLOAD_PROMPT
+        value: "0"
+      # CMS base URL used at build time to fetch content (e.g. https://h2t-cobra-cms.onrender.com)
+      - key: CMS_URL
+        sync: false
+      # Public URL of this site (e.g. https://h2t-cobra-shop.onrender.com)
+      - key: NEXT_PUBLIC_SITE_URL
         sync: false
