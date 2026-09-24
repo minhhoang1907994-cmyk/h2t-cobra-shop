@@ -8,7 +8,7 @@ export default function NotFound() {
       <h1 className="text-2xl font-bold">Không tìm thấy trang</h1>
       <p className="text-muted-foreground">Sản phẩm có thể đã ngừng bán hoặc đường dẫn không đúng.</p>
       <Link
-        className="rounded-full bg-brand px-6 py-3 font-bold text-white hover:bg-brand-dark"
+        className="rounded-full bg-brand px-6 py-3 font-bold text-white transition hover:brightness-110"
         href="/san-pham/"
       >
         Xem sản phẩm khác

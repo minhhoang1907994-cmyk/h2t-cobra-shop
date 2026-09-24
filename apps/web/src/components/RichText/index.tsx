@@ -140,7 +140,7 @@ export const RichText: React.FC<{ className?: string; data: RichTextData }> = ({
   className,
   data,
 }) => (
-  <div className={cn('prose max-w-none prose-a:text-brand', className)}>
+  <div className={cn('prose prose-invert max-w-none prose-a:text-brand', className)}>
     {renderNodes(data.root.children as LexicalNode[])}
   </div>
 )

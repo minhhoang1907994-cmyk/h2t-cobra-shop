@@ -3,16 +3,17 @@
 @plugin "@tailwindcss/typography";
 
 :root {
-  --background: #f5faff;
-  --foreground: #0f1f3d;
-  --card: #ffffff;
-  --muted: #eaf3fd;
-  --muted-foreground: #5b6b86;
-  --border: #d7e6f7;
-  --brand: #1d4ed8;
-  --brand-dark: #1e3a8a;
-  --accent: #f97316;
-  --sunny: #facc15;
+  /* Dark navy + neon blue + orange, matching the logo and banner */
+  --background: #070f1f;
+  --foreground: #e8eefb;
+  --card: #0e1a31;
+  --muted: #13223f;
+  --muted-foreground: #93a3c2;
+  --border: #1f3257;
+  --brand: #1e8fff;
+  --brand-dark: #050b18;
+  --accent: #ff7a1a;
+  --sunny: #ffb938;
 }
 
 @theme inline {
@@ -34,6 +35,10 @@
     @apply border-border;
   }
 
+  html {
+    color-scheme: dark;
+  }
+
   body {
     @apply flex min-h-screen flex-col bg-background font-sans text-foreground antialiased;
   }
@@ -48,4 +53,11 @@
   @media (width >= 48rem) {
     padding-inline: 2rem;
   }
+}
+
+/* Blue-to-orange gradient text, like the "H2TCOBRA" wordmark */
+@utility text-brand-gradient {
+  background-image: linear-gradient(90deg, var(--brand), #5cb8ff 40%, var(--accent) 60%, var(--sunny));
+  background-clip: text;
+  color: transparent;
 }

@@ -9,6 +9,9 @@ import { getCategoryPath, SITE_DESCRIPTION } from '@/utilities/site'
 
 const FEATURED_LIMIT = 8
 
+// Default banner (apps/web/public/brand), used until an "Ảnh banner" is uploaded in the CMS
+const BANNER_SRC_SET = [768, 1280, 1919].map((w) => `/brand/banner-${w}.webp ${w}w`).join(', ')
+
 export default async function HomePage() {
   const [settings, categories, featuredProducts] = await Promise.all([
     getSiteSettings(),
@@ -20,60 +23,78 @@ export default async function HomePage() {
 
   return (
     <>
-      <section className="relative overflow-hidden bg-gradient-to-b from-sky-300 via-sky-200 to-background">
-        <div className="container grid items-center gap-10 py-12 md:py-20 lg:grid-cols-2">
-          <div className="flex flex-col gap-6">
-            <span className="inline-flex w-fit items-center gap-2 rounded-full bg-white/80 px-4 py-1.5 text-sm font-bold text-brand">
-              <Sparkles aria-hidden className="size-4 text-accent" />
-              Mô hình in 3D Flexi • Khớp cử động
-            </span>
-            <h1 className="text-4xl font-black leading-tight text-brand-dark md:text-6xl">
-              {heroTitle || 'Cả đại dương trong lòng bàn tay'}
-            </h1>
-            <p className="max-w-xl text-lg text-foreground/80">{heroSubtitle || SITE_DESCRIPTION}</p>
-            <div className="flex flex-wrap gap-3">
-              <Link
-                className="rounded-full bg-brand px-6 py-3 font-bold text-white shadow-lg shadow-brand/30 transition hover:bg-brand-dark"
-                href="/san-pham/"
-              >
-                Xem sản phẩm
-              </Link>
-              {shopeeUrl && (
-                <a
-                  className="inline-flex items-center gap-2 rounded-full bg-accent px-6 py-3 font-bold text-white shadow-lg shadow-accent/30 transition hover:brightness-110"
-                  href={shopeeUrl}
-                  rel="noopener noreferrer"
-                  target="_blank"
-                >
-                  <ShoppingBag aria-hidden className="size-5" />
-                  Mua trên Shopee
-                </a>
-              )}
-            </div>
-          </div>
+      <section className="relative bg-brand-dark">
+        {heroImage && typeof heroImage === 'object' ? (
+          <Media
+            className="mx-auto block h-auto w-full max-w-[120rem]"
+            priority
+            resource={heroImage}
+            sizes="100vw"
+          />
+        ) : (
+          /* eslint-disable-next-line @next/next/no-img-element -- static export has no image optimizer */
+          <img
+            alt="H2T Cobra — 3D Printing Solutions"
+            className="mx-auto block h-auto w-full max-w-[120rem]"
+            fetchPriority="high"
+            height={820}
+            sizes="100vw"
+            src="/brand/banner-1280.webp"
+            srcSet={BANNER_SRC_SET}
+            width={1919}
+          />
+        )}
+        <div
+          aria-hidden
+          className="h-1 bg-gradient-to-r from-brand via-brand/60 to-accent shadow-[0_0_16px] shadow-brand/60"
+        />
+      </section>
 
-          {heroImage && typeof heroImage === 'object' && (
-            <div className="relative aspect-square overflow-hidden rounded-[2rem] border-4 border-white shadow-2xl">
-              <Media
-                className="absolute inset-0 size-full object-cover"
-                priority
-                resource={heroImage}
-                sizes="(max-width: 1024px) 100vw, 50vw"
-              />
-            </div>
-          )}
+      <section className="relative overflow-hidden">
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_top_left,rgb(30_143_255/0.18),transparent_55%),radial-gradient(ellipse_at_bottom_right,rgb(255_122_26/0.14),transparent_55%)]"
+        />
+        <div className="container relative flex flex-col items-center gap-6 py-12 text-center md:py-16">
+          <span className="inline-flex w-fit items-center gap-2 rounded-full border border-brand/40 bg-brand/10 px-4 py-1.5 text-sm font-bold text-brand">
+            <Sparkles aria-hidden className="size-4 text-accent" />
+            Mô hình in 3D Flexi • Khớp cử động
+          </span>
+          <h1 className="text-brand-gradient max-w-4xl text-4xl font-black leading-tight md:text-6xl">
+            {heroTitle || 'Cả đại dương trong lòng bàn tay'}
+          </h1>
+          <p className="max-w-2xl text-lg text-muted-foreground">{heroSubtitle || SITE_DESCRIPTION}</p>
+          <div className="flex flex-wrap justify-center gap-3">
+            <Link
+              className="rounded-full bg-brand px-6 py-3 font-bold text-white shadow-lg shadow-brand/30 transition hover:brightness-110"
+              href="/san-pham/"
+            >
+              Xem sản phẩm
+            </Link>
+            {shopeeUrl && (
+              <a
+                className="inline-flex items-center gap-2 rounded-full bg-accent px-6 py-3 font-bold text-white shadow-lg shadow-accent/30 transition hover:brightness-110"
+                href={shopeeUrl}
+                rel="noopener noreferrer"
+                target="_blank"
+              >
+                <ShoppingBag aria-hidden className="size-5" />
+                Mua trên Shopee
+              </a>
+            )}
+          </div>
         </div>
       </section>
 
       {highlights && highlights.length > 0 && (
-        <section className="container -mt-4 md:-mt-8">
+        <section className="container">
           <ul className="grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-6">
             {highlights.map((highlight) => (
               <li
-                className="flex flex-col gap-1 rounded-3xl border-2 border-border bg-card p-4 text-center shadow-sm"
+                className="flex flex-col gap-1 rounded-3xl border-2 border-border bg-card p-4 text-center transition-colors hover:border-accent/60"
                 key={highlight.id}
               >
-                <span className="font-black text-brand">{highlight.title}</span>
+                <span className="font-black text-accent">{highlight.title}</span>
                 {highlight.description && (
                   <span className="text-sm text-muted-foreground">{highlight.description}</span>
                 )}
