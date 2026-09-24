@@ -32,6 +32,9 @@ export default buildConfig({
     supportedLanguages: { vi, en },
   },
   db: postgresAdapter({
+    // Local and production share one database: never let `next dev` alter the schema.
+    // Schema changes must go through `payload migrate:create` + `payload migrate`.
+    push: false,
     pool: {
       connectionString: process.env.DATABASE_URL || '',
     },

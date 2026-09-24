@@ -22,7 +22,7 @@ repo
 - Language: TypeScript 5.7 (Node.js 22 trên Render)
 - CMS: Payload 3.90.2, `@payloadcms/db-postgres`, `@payloadcms/storage-s3`, `@payloadcms/plugin-seo`, `@payloadcms/translations` (admin tiếng Việt)
 - Web: Next.js 16.3 static export, React 19, Tailwind CSS 4 (+ typography), lucide-react, font Nunito
-- Database: PostgreSQL — Neon (dev và production là 2 DB riêng)
+- Database: PostgreSQL — Neon. **Local và production DÙNG CHUNG 1 DB** (quyết định 2026-09-24) → mọi thao tác ở local ghi thẳng lên dữ liệu thật
 - Package manager: pnpm 10 (field `packageManager` ở root, chạy bằng corepack)
 
 ## Domain Model (apps/cms)
@@ -77,9 +77,10 @@ src/
 
 ### DB & Migration
 - Schema do Payload quản lý — sửa config → `pnpm --filter cms payload migrate:create <name>` → commit migration.
+- `push: false` trong `payload.config.ts` (vì dùng chung DB production): dev KHÔNG tự sửa schema. Sau khi sửa collection phải `migrate:create` rồi `migrate` thì local mới chạy được.
 - `migrate:create` hỏi tương tác "created or renamed": bảng/cột mới luôn chọn **create** trừ khi thật sự đổi tên.
 - Kiểm tra SQL sinh ra trước khi commit: drizzle có thể sinh `DROP CONSTRAINT` sau `DROP TABLE ... CASCADE` → phải thêm `IF EXISTS` (đã gặp ở `20260924_082026_split_static_web`).
-- Test migration: `pnpm --filter cms payload migrate:fresh` trên DB dev (xóa sạch DB dev!).
+- **CẤM** chạy `migrate:fresh`, `migrate:reset`, `migrate:down` hoặc script seed/xóa dữ liệu test vào DB trong `.env` — đó là DB production. Muốn test migration phải tạo Neon branch riêng và trỏ `DATABASE_URL` tạm sang đó.
 - Neon: `DATABASE_URL` dùng pooled connection string (`-pooler`).
 
 ### Test Conventions
