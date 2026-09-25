@@ -35,8 +35,8 @@ repo
 | `users` | Tài khoản admin | `email`, `name` — chưa có phân quyền role |
 | Global `site-settings` | Cài đặt chung + nội dung trang chủ | tab Thông tin shop (`siteName`, `logo`, `tagline`, `hashtags`), tab Trang chủ (`heroTitle`, `heroSubtitle`, `heroImage`, `highlights[]`), tab Liên hệ (`facebookUrl`, `messengerUrl`, `shopeeUrl`, `tiktokUrl`, `phone`, `zalo`, `address`) |
 
-Route web: `/`, `/san-pham/`, `/san-pham/[slug]/`, `/danh-muc/[slug]/`, `/sitemap.xml`, `/robots.txt` (có `trailingSlash`).
-Nút "Đặt qua Facebook" dùng `product.facebookUrl` → fallback `site-settings.messengerUrl` → `site-settings.facebookUrl`.
+Route web: `/`, `/san-pham/`, `/san-pham/[slug]/`, `/gioi-thieu/`, `/danh-muc/[slug]/`, `/sitemap.xml`, `/robots.txt` (có `trailingSlash`).
+Nút "Đặt qua Facebook" dùng `product.facebookUrl` → fallback `site-settings.messengerUrl` → `site-settings.facebookUrl` → `FACEBOOK_URL` (`apps/web/src/utilities/site.ts`).
 Khi chưa có sản phẩm/danh mục, route động sinh trang giữ chỗ `_` (render 404) vì static export không cho `generateStaticParams` rỗng.
 
 ## Project Conventions

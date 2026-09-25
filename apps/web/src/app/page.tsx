@@ -11,10 +11,10 @@ import { getCategoryPath, SITE_DESCRIPTION } from '@/utilities/site'
 const FEATURED_LIMIT = 8
 
 // Default banner (apps/web/public/brand), used until an "Ảnh banner" is uploaded in the CMS
-const BANNER_SRC_SET = [768, 1280, 2048].map((w) => `/brand/banner-${w}.webp ${w}w`).join(', ')
+const BANNER_SRC_SET = [768, 1280, 1920, 2688].map((w) => `/brand/banner-${w}.webp ${w}w`).join(', ')
 
-// Banner keeps its original aspect ratio: full width on phones, capped height on larger screens
-const BANNER_CLASS = 'block h-auto w-full md:max-h-[340px] md:w-auto'
+// Banner spans the full width with its original aspect ratio
+const BANNER_CLASS = 'block h-auto w-full'
 
 export default async function HomePage() {
   const [settings, categories, featuredProducts] = await Promise.all([
@@ -27,48 +27,34 @@ export default async function HomePage() {
 
   const heroMedia = heroImage && typeof heroImage === 'object' ? heroImage : null
   const bannerAlt = heroMedia?.alt || 'H2T Cobra — 3D Printing Solutions'
-  const bannerZoomSrc = heroMedia?.sizes?.xlarge?.url || heroMedia?.url || '/brand/banner-2048.webp'
-  const bannerThumbSrc = heroMedia?.sizes?.small?.url || heroMedia?.url || '/brand/banner-768.webp'
+  const bannerZoomSrc = heroMedia?.sizes?.xlarge?.url || heroMedia?.url || '/brand/banner-2688.webp'
 
   return (
     <>
-      <section className="relative overflow-hidden bg-brand-dark">
-        {/* Blurred copy fills the sides once the banner is narrower than the screen */}
-        {/* eslint-disable-next-line @next/next/no-img-element -- static export has no image optimizer */}
-        <img
-          alt=""
-          aria-hidden
-          className="absolute inset-0 size-full scale-110 object-cover opacity-60 blur-2xl"
-          src={bannerThumbSrc}
-        />
-        <div className="relative flex justify-center">
-          <ZoomableImage alt={bannerAlt} className="w-full md:w-auto" zoomSrc={bannerZoomSrc}>
-            {heroMedia ? (
-              <Media
-                className={BANNER_CLASS}
-                priority
-                resource={heroMedia}
-                sizes="(max-width: 768px) 100vw, 800px"
-              />
-            ) : (
-              /* eslint-disable-next-line @next/next/no-img-element -- static export has no image optimizer */
-              <img
-                alt={bannerAlt}
-                className={BANNER_CLASS}
-                fetchPriority="high"
-                height={768}
-                sizes="(max-width: 768px) 100vw, 800px"
-                src="/brand/banner-1280.webp"
-                srcSet={BANNER_SRC_SET}
-                width={2048}
-              />
-            )}
-          </ZoomableImage>
-        </div>
-        <div
-          aria-hidden
-          className="relative h-1 bg-gradient-to-r from-brand via-sunny to-accent"
-        />
+      <section className="bg-brand-dark">
+        <ZoomableImage alt={bannerAlt} className="w-full" zoomSrc={bannerZoomSrc}>
+          {heroMedia ? (
+            <Media
+              className={BANNER_CLASS}
+              priority
+              resource={heroMedia}
+              sizes="100vw"
+            />
+          ) : (
+            /* eslint-disable-next-line @next/next/no-img-element -- static export has no image optimizer */
+            <img
+              alt={bannerAlt}
+              className={BANNER_CLASS}
+              fetchPriority="high"
+              height={530}
+              sizes="100vw"
+              src="/brand/banner-1280.webp"
+              srcSet={BANNER_SRC_SET}
+              width={2688}
+            />
+          )}
+        </ZoomableImage>
+        <div aria-hidden className="h-1 bg-gradient-to-r from-brand via-sunny to-accent" />
       </section>
 
       <section className="relative overflow-hidden">

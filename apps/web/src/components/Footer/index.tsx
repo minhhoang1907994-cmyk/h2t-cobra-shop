@@ -6,6 +6,8 @@ import type { SiteSetting } from '@cms/payload-types'
 import { Wordmark } from '@/components/Wordmark'
 import { FACEBOOK_URL } from '@/utilities/site'
 
+const HEADING_CLASS = 'text-sm font-black uppercase tracking-wider text-white/70'
+
 const SocialLink: React.FC<{ href?: string | null; label: string }> = ({ href, label }) =>
   href ? (
     <a
@@ -24,7 +26,7 @@ export const Footer: React.FC<{ settings: SiteSetting }> = ({ settings }) => {
 
   return (
     <footer className="mt-auto bg-gradient-to-br from-brand-dark to-brand text-white">
-      <div className="container grid gap-8 py-12 md:grid-cols-2">
+      <div className="container grid gap-10 py-12 md:grid-cols-3 md:gap-8">
         <div className="flex flex-col gap-3">
           <p>
             <Wordmark className="text-3xl" />
@@ -35,28 +37,35 @@ export const Footer: React.FC<{ settings: SiteSetting }> = ({ settings }) => {
           )}
         </div>
 
-        <div className="flex flex-col gap-3 md:items-end">
-          {(phone || zalo) && (
-            <p className="flex items-center gap-2">
-              <Phone aria-hidden className="size-4" />
-              {phone && <a href={`tel:${phone.replace(/\s/g, '')}`}>{phone}</a>}
-              {zalo && (
-                <a
-                  href={`https://zalo.me/${zalo.replace(/\s/g, '')}`}
-                  rel="noopener noreferrer"
-                  target="_blank"
-                >
-                  (Zalo: {zalo})
-                </a>
-              )}
-            </p>
-          )}
-          {address && (
-            <p className="flex items-center gap-2">
-              <MapPin aria-hidden className="size-4" />
-              {address}
-            </p>
-          )}
+        {(phone || zalo || address) && (
+          <div className="flex flex-col gap-3">
+            <h2 className={HEADING_CLASS}>Liên hệ</h2>
+            {(phone || zalo) && (
+              <p className="flex items-center gap-2">
+                <Phone aria-hidden className="size-4 shrink-0" />
+                {phone && <a href={`tel:${phone.replace(/\s/g, '')}`}>{phone}</a>}
+                {zalo && (
+                  <a
+                    href={`https://zalo.me/${zalo.replace(/\s/g, '')}`}
+                    rel="noopener noreferrer"
+                    target="_blank"
+                  >
+                    (Zalo: {zalo})
+                  </a>
+                )}
+              </p>
+            )}
+            {address && (
+              <p className="flex items-start gap-2">
+                <MapPin aria-hidden className="mt-1 size-4 shrink-0" />
+                {address}
+              </p>
+            )}
+          </div>
+        )}
+
+        <div className="flex flex-col gap-3">
+          <h2 className={HEADING_CLASS}>Kết nối</h2>
           <a
             className="inline-flex w-fit items-center gap-2 rounded-full bg-white px-5 py-2.5 font-bold text-[#1877f2] shadow-lg shadow-black/20 transition hover:-translate-y-0.5 hover:shadow-xl"
             href={facebookUrl || FACEBOOK_URL}
@@ -66,10 +75,12 @@ export const Footer: React.FC<{ settings: SiteSetting }> = ({ settings }) => {
             <Facebook aria-hidden className="size-5" />
             Theo dõi trên Facebook
           </a>
-          <div className="flex flex-wrap gap-2">
-            <SocialLink href={shopeeUrl} label="Shopee" />
-            <SocialLink href={tiktokUrl} label="TikTok" />
-          </div>
+          {(shopeeUrl || tiktokUrl) && (
+            <div className="flex flex-wrap gap-2">
+              <SocialLink href={shopeeUrl} label="Shopee" />
+              <SocialLink href={tiktokUrl} label="TikTok" />
+            </div>
+          )}
         </div>
       </div>
       <div className="border-t border-white/20 py-4 text-center text-sm text-white/80">

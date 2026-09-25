@@ -9,6 +9,7 @@ import { getAllProducts, getProductBySlug, getRelatedProducts, getSiteSettings }
 import {
   getCategoryPath,
   getProductPath,
+  FACEBOOK_URL,
   getSiteURL,
   SITE_NAME,
   withPlaceholderParam,
@@ -58,7 +59,8 @@ export default async function ProductPage({ params }: Args) {
     ...product.gallery.filter(isMedia),
     ...(product.colors || []).map((color) => color.image).filter(isMedia),
   ]
-  const facebookUrl = product.facebookUrl || siteSettings.messengerUrl || siteSettings.facebookUrl
+  const facebookUrl =
+    product.facebookUrl || siteSettings.messengerUrl || siteSettings.facebookUrl || FACEBOOK_URL
 
   return (
     <article className="container py-12 md:py-16">
