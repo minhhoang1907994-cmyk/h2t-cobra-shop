@@ -1,12 +1,16 @@
-import { Facebook, MapPin, Phone } from 'lucide-react'
+import { Facebook, MapPin, Phone, ShoppingBag } from 'lucide-react'
 import React from 'react'
 
 import type { SiteSetting } from '@cms/payload-types'
 
 import { Wordmark } from '@/components/Wordmark'
 import { FACEBOOK_URL } from '@/utilities/site'
+import { cn } from '@/utilities/ui'
 
 const HEADING_CLASS = 'text-sm font-black uppercase tracking-wider text-white/70'
+
+const BUTTON_CLASS =
+  'inline-flex w-full items-center justify-center gap-2 rounded-full bg-white px-5 py-2.5 font-bold shadow-lg shadow-black/20 transition hover:-translate-y-0.5 hover:shadow-xl sm:w-60'
 
 const SocialLink: React.FC<{ href?: string | null; label: string }> = ({ href, label }) =>
   href ? (
@@ -64,10 +68,9 @@ export const Footer: React.FC<{ settings: SiteSetting }> = ({ settings }) => {
           </div>
         )}
 
-        <div className="flex flex-col gap-3">
-          <h2 className={HEADING_CLASS}>Kết nối</h2>
+        <div className="flex flex-col gap-3 md:items-end">
           <a
-            className="inline-flex w-fit items-center gap-2 rounded-full bg-white px-5 py-2.5 font-bold text-[#1877f2] shadow-lg shadow-black/20 transition hover:-translate-y-0.5 hover:shadow-xl"
+            className={cn(BUTTON_CLASS, 'text-[#1877f2]')}
             href={facebookUrl || FACEBOOK_URL}
             rel="noopener noreferrer"
             target="_blank"
@@ -75,9 +78,17 @@ export const Footer: React.FC<{ settings: SiteSetting }> = ({ settings }) => {
             <Facebook aria-hidden className="size-5" />
             Theo dõi trên Facebook
           </a>
-          {(shopeeUrl || tiktokUrl) && (
+          {/* TODO: Shopee shop link not provided yet — the button stays inert until "Shopee" is set in Cài đặt chung */}
+          <a
+            className={cn(BUTTON_CLASS, 'text-[#ee4d2d]')}
+            href={shopeeUrl || '#'}
+            {...(shopeeUrl ? { rel: 'noopener noreferrer', target: '_blank' } : {})}
+          >
+            <ShoppingBag aria-hidden className="size-5" />
+            Mua trên Shopee
+          </a>
+          {tiktokUrl && (
             <div className="flex flex-wrap gap-2">
-              <SocialLink href={shopeeUrl} label="Shopee" />
               <SocialLink href={tiktokUrl} label="TikTok" />
             </div>
           )}
