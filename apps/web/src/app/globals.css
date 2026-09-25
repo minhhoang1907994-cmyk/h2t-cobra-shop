@@ -3,15 +3,15 @@
 @plugin "@tailwindcss/typography";
 
 :root {
-  /* Dark navy + neon blue + orange, matching the logo and banner */
-  --background: #070f1f;
-  --foreground: #e8eefb;
-  --card: #0e1a31;
-  --muted: #13223f;
-  --muted-foreground: #93a3c2;
-  --border: #1f3257;
-  --brand: #1e8fff;
-  --brand-dark: #050b18;
+  /* Bright theme: light sky background + the logo's blue and orange */
+  --background: #f4f9ff;
+  --foreground: #10213f;
+  --card: #ffffff;
+  --muted: #e6f1ff;
+  --muted-foreground: #53637f;
+  --border: #d3e4fb;
+  --brand: #1583f0;
+  --brand-dark: #0b3d8c;
   --accent: #ff7a1a;
   --sunny: #ffb938;
 }
@@ -36,7 +36,7 @@
   }
 
   html {
-    color-scheme: dark;
+    color-scheme: light;
   }
 
   body {
@@ -57,7 +57,7 @@
 
 /* Blue-to-orange gradient text, like the "H2TCOBRA" wordmark */
 @utility text-brand-gradient {
-  background-image: linear-gradient(90deg, var(--brand), #5cb8ff 40%, var(--accent) 60%, var(--sunny));
+  background-image: linear-gradient(90deg, var(--brand), #3b9cff 40%, var(--accent) 65%, #ff5c38);
   background-clip: text;
   color: transparent;
 }

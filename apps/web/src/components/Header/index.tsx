@@ -10,7 +10,7 @@ export const Header: React.FC<{ settings: SiteSetting }> = ({ settings }) => {
   const { logo, shopeeUrl, siteName } = settings
 
   return (
-    <header className="sticky top-0 z-30 border-b border-brand/30 bg-brand-dark/85 shadow-[0_1px_24px_-8px] shadow-brand/40 backdrop-blur">
+    <header className="sticky top-0 z-30 border-b border-border bg-white/85 shadow-[0_1px_20px_-8px] shadow-brand/30 backdrop-blur">
       <div className="container flex h-16 items-center justify-between gap-4">
         <Link aria-label={`${siteName} — Trang chủ`} className="flex items-center gap-3" href="/">
           {logo && typeof logo === 'object' ? (

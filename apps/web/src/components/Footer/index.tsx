@@ -6,7 +6,7 @@ import type { SiteSetting } from '@cms/payload-types'
 const SocialLink: React.FC<{ href?: string | null; label: string }> = ({ href, label }) =>
   href ? (
     <a
-      className="rounded-full border-2 border-brand/40 px-4 py-1.5 text-sm font-bold transition-colors hover:border-accent hover:bg-accent"
+      className="rounded-full border-2 border-white/50 px-4 py-1.5 text-sm font-bold transition-colors hover:border-accent hover:bg-accent"
       href={href}
       rel="noopener noreferrer"
       target="_blank"
@@ -20,10 +20,10 @@ export const Footer: React.FC<{ settings: SiteSetting }> = ({ settings }) => {
     settings
 
   return (
-    <footer className="mt-auto border-t border-brand/30 bg-brand-dark text-white">
+    <footer className="mt-auto bg-gradient-to-br from-brand-dark to-brand text-white">
       <div className="container grid gap-8 py-12 md:grid-cols-2">
         <div className="flex flex-col gap-3">
-          <p className="text-brand-gradient w-fit text-2xl font-black">{siteName}</p>
+          <p className="w-fit text-2xl font-black">{siteName}</p>
           {tagline && <p className="text-white/80">{tagline}</p>}
           {hashtags && hashtags.length > 0 && (
             <p className="text-sm font-bold text-sunny">{hashtags.join('  ')}</p>
@@ -59,7 +59,7 @@ export const Footer: React.FC<{ settings: SiteSetting }> = ({ settings }) => {
           </div>
         </div>
       </div>
-      <div className="border-t border-white/10 py-4 text-center text-sm text-white/60">
+      <div className="border-t border-white/20 py-4 text-center text-sm text-white/80">
         © {new Date().getFullYear()} {siteName}
       </div>
     </footer>
