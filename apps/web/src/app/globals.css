@@ -28,6 +28,7 @@
   --color-accent: var(--accent);
   --color-sunny: var(--sunny);
   --font-sans: var(--font-nunito);
+  --font-wordmark: var(--font-montserrat);
 }
 
 @layer base {

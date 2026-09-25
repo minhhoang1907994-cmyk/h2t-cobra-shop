@@ -1,7 +1,10 @@
-import { MapPin, Phone } from 'lucide-react'
+import { Facebook, MapPin, Phone } from 'lucide-react'
 import React from 'react'
 
 import type { SiteSetting } from '@cms/payload-types'
+
+import { Wordmark } from '@/components/Wordmark'
+import { FACEBOOK_URL } from '@/utilities/site'
 
 const SocialLink: React.FC<{ href?: string | null; label: string }> = ({ href, label }) =>
   href ? (
@@ -23,7 +26,9 @@ export const Footer: React.FC<{ settings: SiteSetting }> = ({ settings }) => {
     <footer className="mt-auto bg-gradient-to-br from-brand-dark to-brand text-white">
       <div className="container grid gap-8 py-12 md:grid-cols-2">
         <div className="flex flex-col gap-3">
-          <p className="w-fit text-2xl font-black">{siteName}</p>
+          <p>
+            <Wordmark className="text-3xl" />
+          </p>
           {tagline && <p className="text-white/80">{tagline}</p>}
           {hashtags && hashtags.length > 0 && (
             <p className="text-sm font-bold text-sunny">{hashtags.join('  ')}</p>
@@ -52,8 +57,16 @@ export const Footer: React.FC<{ settings: SiteSetting }> = ({ settings }) => {
               {address}
             </p>
           )}
+          <a
+            className="inline-flex w-fit items-center gap-2 rounded-full bg-white px-5 py-2.5 font-bold text-[#1877f2] shadow-lg shadow-black/20 transition hover:-translate-y-0.5 hover:shadow-xl"
+            href={facebookUrl || FACEBOOK_URL}
+            rel="noopener noreferrer"
+            target="_blank"
+          >
+            <Facebook aria-hidden className="size-5" />
+            Theo dõi trên Facebook
+          </a>
           <div className="flex flex-wrap gap-2">
-            <SocialLink href={facebookUrl} label="Facebook" />
             <SocialLink href={shopeeUrl} label="Shopee" />
             <SocialLink href={tiktokUrl} label="TikTok" />
           </div>

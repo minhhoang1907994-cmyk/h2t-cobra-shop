@@ -2,6 +2,9 @@ export const SITE_NAME = 'H2T Cobra'
 
 export const SITE_DESCRIPTION = 'Mô hình in 3D Flexi khớp cử động — H2T Cobra 3D Huế.'
 
+// Official Facebook page, used when "Facebook" is left empty in Cài đặt chung
+export const FACEBOOK_URL = 'https://www.facebook.com/h2tcobra3dhue'
+
 export const getSiteURL = () =>
   (process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3001').replace(/\/$/, '')
 

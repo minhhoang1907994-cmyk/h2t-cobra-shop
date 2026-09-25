@@ -11,7 +11,7 @@ import { getCategoryPath, SITE_DESCRIPTION } from '@/utilities/site'
 const FEATURED_LIMIT = 8
 
 // Default banner (apps/web/public/brand), used until an "Ảnh banner" is uploaded in the CMS
-const BANNER_SRC_SET = [768, 1280, 1919].map((w) => `/brand/banner-${w}.webp ${w}w`).join(', ')
+const BANNER_SRC_SET = [768, 1280, 2048].map((w) => `/brand/banner-${w}.webp ${w}w`).join(', ')
 
 // Banner keeps its original aspect ratio: full width on phones, capped height on larger screens
 const BANNER_CLASS = 'block h-auto w-full md:max-h-[340px] md:w-auto'
@@ -27,7 +27,7 @@ export default async function HomePage() {
 
   const heroMedia = heroImage && typeof heroImage === 'object' ? heroImage : null
   const bannerAlt = heroMedia?.alt || 'H2T Cobra — 3D Printing Solutions'
-  const bannerZoomSrc = heroMedia?.sizes?.xlarge?.url || heroMedia?.url || '/brand/banner-1919.webp'
+  const bannerZoomSrc = heroMedia?.sizes?.xlarge?.url || heroMedia?.url || '/brand/banner-2048.webp'
   const bannerThumbSrc = heroMedia?.sizes?.small?.url || heroMedia?.url || '/brand/banner-768.webp'
 
   return (
@@ -56,11 +56,11 @@ export default async function HomePage() {
                 alt={bannerAlt}
                 className={BANNER_CLASS}
                 fetchPriority="high"
-                height={820}
+                height={768}
                 sizes="(max-width: 768px) 100vw, 800px"
                 src="/brand/banner-1280.webp"
                 srcSet={BANNER_SRC_SET}
-                width={1919}
+                width={2048}
               />
             )}
           </ZoomableImage>
