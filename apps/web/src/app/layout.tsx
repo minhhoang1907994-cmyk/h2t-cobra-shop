@@ -38,7 +38,20 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   )
 }
 
-export const metadata: Metadata = {
+export async function generateMetadata(): Promise<Metadata> {
+  const { logo } = await getSiteSettings()
+
+  // Tab icon follows the header logo: the "Logo" uploaded in Cài đặt chung, else the bundled one
+  const logoIconUrl =
+    logo && typeof logo === 'object' ? logo.sizes?.square?.url || logo.url : undefined
+
+  return {
+    ...metadata,
+    icons: logoIconUrl ? { icon: logoIconUrl, apple: logoIconUrl } : metadata.icons,
+  }
+}
+
+const metadata: Metadata = {
   metadataBase: new URL(getSiteURL()),
   title: {
     default: SITE_NAME,
@@ -46,7 +59,11 @@ export const metadata: Metadata = {
   },
   description: SITE_DESCRIPTION,
   icons: {
-    icon: '/favicon.svg',
+    icon: [
+      { url: '/favicon.ico', sizes: 'any' },
+      { url: '/icon.png', type: 'image/png', sizes: '192x192' },
+    ],
+    apple: '/apple-touch-icon.png',
   },
   openGraph: {
     type: 'website',
