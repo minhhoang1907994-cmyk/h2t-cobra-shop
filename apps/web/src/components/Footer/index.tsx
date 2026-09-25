@@ -53,8 +53,9 @@ export const Footer: React.FC<{ settings: SiteSetting }> = ({ settings }) => {
   return (
     <footer className="mt-auto bg-gradient-to-br from-[#fff4e2] via-[#fdecd0] to-[#f8d8a8] text-foreground">
       <div aria-hidden className="h-1 bg-gradient-to-r from-brand via-sunny to-accent" />
-      <div className="container grid gap-10 py-12 md:grid-cols-3 md:gap-8">
-        <div className="flex flex-col gap-3">
+      {/* Phone: centered stack. Tablet: brand | social on top, contact below. Desktop: 3 columns */}
+      <div className="container grid gap-8 py-10 text-center sm:grid-cols-2 sm:text-left lg:grid-cols-3 lg:py-12">
+        <div className="flex flex-col items-center gap-3 sm:items-start">
           <p>
             <Wordmark className="text-3xl" />
           </p>
@@ -65,10 +66,10 @@ export const Footer: React.FC<{ settings: SiteSetting }> = ({ settings }) => {
         </div>
 
         {(phone || zalo || address) && (
-          <div className="flex flex-col gap-3">
+          <div className="flex flex-col items-center gap-3 sm:col-span-2 sm:row-start-2 sm:items-start lg:col-span-1 lg:row-start-1">
             <h2 className={HEADING_CLASS}>Liên hệ</h2>
             {(phone || zalo) && (
-              <p className="flex items-center gap-2">
+              <p className="flex flex-wrap items-center justify-center gap-2 sm:justify-start">
                 <Phone aria-hidden className="size-4 shrink-0 text-accent" />
                 {phone && <a href={`tel:${phone.replace(/\s/g, '')}`}>{phone}</a>}
                 {zalo && (
@@ -83,7 +84,7 @@ export const Footer: React.FC<{ settings: SiteSetting }> = ({ settings }) => {
               </p>
             )}
             {address && (
-              <p className="flex items-start gap-2">
+              <p className="flex items-start gap-2 text-left">
                 <MapPin aria-hidden className="mt-1 size-4 shrink-0 text-accent" />
                 {address}
               </p>
@@ -91,7 +92,7 @@ export const Footer: React.FC<{ settings: SiteSetting }> = ({ settings }) => {
           </div>
         )}
 
-        <div className="flex flex-wrap content-start gap-3 md:col-start-3 md:justify-end">
+        <div className="flex flex-wrap content-start justify-center gap-3 sm:col-start-2 sm:row-start-1 sm:justify-end lg:col-start-3">
           <SocialButton
             className="hover:bg-[#1877f2]"
             href={facebookUrl || FACEBOOK_URL}
