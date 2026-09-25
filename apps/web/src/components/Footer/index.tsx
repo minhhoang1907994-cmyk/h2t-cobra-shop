@@ -91,7 +91,7 @@ export const Footer: React.FC<{ settings: SiteSetting }> = ({ settings }) => {
           </div>
         )}
 
-        <div className="flex flex-wrap gap-3 md:justify-end">
+        <div className="flex flex-wrap content-start gap-3 md:col-start-3 md:justify-end">
           <SocialButton
             className="hover:bg-[#1877f2]"
             href={facebookUrl || FACEBOOK_URL}
