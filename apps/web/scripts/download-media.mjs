@@ -1,4 +1,4 @@
-// Downloads every media file (original + image sizes) from the CMS into public/media before
+// Downloads the media files the web uses (original + image sizes) from the CMS into public/media before
 // `next build`, so the static site serves images itself. The B2 bucket stays private: files
 // are read through the CMS proxy route (/api/media/file/...), which only needs to be awake
 // during the build, not when visitors browse the site.
@@ -16,15 +16,19 @@ const CONCURRENCY = 4
 
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms))
 
-// Retries while the CMS free instance is waking up (5xx / network errors)
-async function fetchWithRetry(url) {
+// Retries while the CMS free instance is waking up (5xx / network errors).
+// With `fatalOn500`, a 500 fails immediately: once the CMS is awake, a 500 from the file route
+// means the storage read failed (e.g. B2 daily download cap reached), which retries cannot fix.
+async function fetchWithRetry(url, { fatalOn500 = false } = {}) {
   let lastError
 
   for (let attempt = 1; attempt <= MAX_ATTEMPTS; attempt++) {
     try {
       const res = await fetch(url, { signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS) })
       if (res.ok) return res
-      if (res.status < 500) throw Object.assign(new Error(`${url} responded ${res.status}`), { fatal: true })
+      if (res.status < 500 || (fatalOn500 && res.status === 500)) {
+        throw Object.assign(new Error(`${url} responded ${res.status}`), { fatal: true })
+      }
       lastError = new Error(`${url} responded ${res.status}`)
     } catch (error) {
       if (error.fatal) throw error
@@ -42,13 +46,42 @@ async function fetchWithRetry(url) {
 
 const toAbsoluteUrl = (url) => (url.startsWith('/') ? `${CMS_URL}${url}` : url)
 
+const fetchJson = async (path) => (await fetchWithRetry(`${CMS_URL}${path}`)).json()
+
+const toId = (value) => (value && typeof value === 'object' ? value.id : value)
+
+// Sizes the web only uses for specific media, to save B2 download bandwidth:
+// - square: site logo (app/layout.tsx)
+// - og: SEO image of each published product, falling back to its first gallery image
+//   (app/san-pham/[slug]/page.tsx)
+// Keep these rules in sync with the web code, otherwise pages link to files that were not downloaded.
+async function getRestrictedSizeOwners() {
+  const [settings, products] = await Promise.all([
+    fetchJson('/api/globals/site-settings?depth=0'),
+    fetchJson('/api/products?depth=0&pagination=false&where[_status][equals]=published'),
+  ])
+
+  const ogImageIds = products.docs
+    .map((product) => toId(product.meta?.image) ?? toId(product.gallery?.[0]))
+    .filter((id) => id != null)
+
+  return {
+    square: new Set([toId(settings.logo)].filter((id) => id != null)),
+    og: new Set(ogImageIds),
+  }
+}
+
 async function main() {
-  const res = await fetchWithRetry(`${CMS_URL}/api/media?pagination=false&depth=0`)
-  const { docs } = await res.json()
+  const { docs } = await fetchJson('/api/media?pagination=false&depth=0')
+  const restrictedSizeOwners = await getRestrictedSizeOwners()
 
   const files = new Map()
   for (const doc of docs) {
-    for (const file of [doc, ...Object.values(doc.sizes || {})]) {
+    const sizes = Object.entries(doc.sizes || {})
+      .filter(([name]) => !restrictedSizeOwners[name] || restrictedSizeOwners[name].has(doc.id))
+      .map(([, file]) => file)
+
+    for (const file of [doc, ...sizes]) {
       if (file?.url && file?.filename) files.set(file.filename, toAbsoluteUrl(file.url))
     }
   }
@@ -60,7 +93,7 @@ async function main() {
   const worker = async () => {
     for (let item = queue.shift(); item; item = queue.shift()) {
       const [filename, url] = item
-      const fileRes = await fetchWithRetry(url)
+      const fileRes = await fetchWithRetry(url, { fatalOn500: true })
       await fs.writeFile(path.join(OUTPUT_DIR, filename), Buffer.from(await fileRes.arrayBuffer()))
     }
   }
