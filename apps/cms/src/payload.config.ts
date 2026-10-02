@@ -28,6 +28,11 @@ export default buildConfig({
         Icon: '/components/AdminBrand#AdminIcon',
         Logo: '/components/AdminBrand#AdminLogo',
       },
+      views: {
+        dashboard: {
+          Component: '/components/Dashboard#Dashboard',
+        },
+      },
     },
     meta: {
       titleSuffix: ' | H2T Cobra',

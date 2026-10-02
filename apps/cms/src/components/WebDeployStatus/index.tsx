@@ -91,7 +91,7 @@ export const WebDeployStatus = () => {
   const lastDeployRequestedAt = status?.lastDeployRequestedAt
   const hasPendingChanges = Boolean(
     lastChangedAt &&
-      (!lastDeployRequestedAt || new Date(lastChangedAt) > new Date(lastDeployRequestedAt)),
+    (!lastDeployRequestedAt || new Date(lastChangedAt) > new Date(lastDeployRequestedAt)),
   )
   const tooltip = [
     `Sửa nội dung gần nhất: ${formatTime(lastChangedAt) ?? 'chưa có'}`,

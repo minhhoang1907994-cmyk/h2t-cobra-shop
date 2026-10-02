@@ -1,117 +1,246 @@
-// H2T Cobra admin theme: brand colors of the web site (apps/web/src/app/globals.css)
-// applied on top of Payload's design tokens. Kept outside `@layer payload-default`
-// so these rules win over Payload's defaults.
-@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800&display=swap');
+// H2T Cobra admin theme, modelled on shadcn/ui (zinc neutrals, thin borders, soft radius)
+// with the brand blue of the web site as the primary color.
+// Kept outside `@layer payload-default` so these rules win over Payload's defaults.
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
 :root {
   --h2t-brand: #1583f0;
-  --h2t-brand-dark: #0b3d8c;
+  --h2t-brand-dark: #0b6fd1;
   --h2t-accent: #ff7a1a;
+  --h2t-ring: rgb(21 131 240 / 0.2);
 
-  --font-body: 'Nunito', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-body: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
 
-  // Navy-tinted neutral scale (instead of Payload's plain gray). Payload builds both the
-  // light and dark themes from this scale, so the dark theme becomes a deep navy.
+  // shadcn/ui zinc scale. Payload builds both light and dark themes from it.
   --color-base-0: #ffffff;
-  --color-base-50: #f4f8fd;
-  --color-base-100: #e8f0fa;
-  --color-base-150: #d9e4f2;
-  --color-base-200: #c6d4e7;
-  --color-base-250: #b2c3da;
-  --color-base-300: #9db1cc;
-  --color-base-350: #889fbd;
-  --color-base-400: #758dad;
-  --color-base-450: #637c9c;
-  --color-base-500: #546c8b;
-  --color-base-550: #475d7a;
-  --color-base-600: #3c5069;
-  --color-base-650: #31435a;
-  --color-base-700: #28384c;
-  --color-base-750: #1f2d3f;
-  --color-base-800: #172334;
-  --color-base-850: #111b2a;
-  --color-base-900: #0b1320;
-  --color-base-950: #070d17;
-  --color-base-1000: #03070d;
+  --color-base-50: #fafafa;
+  --color-base-100: #f4f4f5;
+  --color-base-150: #e4e4e7;
+  --color-base-200: #d4d4d8;
+  --color-base-250: #c4c4cc;
+  --color-base-300: #a1a1aa;
+  --color-base-350: #8e8e97;
+  --color-base-400: #71717a;
+  --color-base-450: #63636c;
+  --color-base-500: #52525b;
+  --color-base-550: #4a4a52;
+  --color-base-600: #3f3f46;
+  --color-base-650: #343439;
+  --color-base-700: #27272a;
+  --color-base-750: #202023;
+  --color-base-800: #18181b;
+  --color-base-850: #121214;
+  --color-base-900: #09090b;
+  --color-base-950: #050506;
+  --color-base-1000: #000000;
 
-  --style-radius-s: 6px;
+  --style-radius-s: 8px;
   --style-radius-m: 10px;
-  --style-radius-l: 14px;
+  --style-radius-l: 12px;
+
+  --h2t-border: var(--theme-elevation-150);
+  --h2t-shadow-sm: 0 1px 2px rgb(0 0 0 / 0.05);
 }
 
 html[data-theme='light'] {
-  --theme-bg: var(--color-base-50);
-
-  .card {
-    background: var(--theme-elevation-0);
-  }
+  --theme-bg: #ffffff;
+  --h2t-sidebar-bg: var(--color-base-50);
 }
 
-// Primary actions (Save, Publish, Create new...) use the brand blue
+html[data-theme='dark'] {
+  --h2t-sidebar-bg: var(--color-base-900);
+  --h2t-border: var(--color-base-750);
+}
+
+body {
+  font-feature-settings: 'cv11', 'ss01';
+  -webkit-font-smoothing: antialiased;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+
+// ---------- Buttons ----------
+.btn {
+  --btn-font-weight: 500;
+  border-radius: var(--style-radius-s);
+}
+
 .btn--style-primary {
   --color: #ffffff;
   --bg-color: var(--h2t-brand);
   --hover-bg: var(--h2t-brand-dark);
   --hover-color: #ffffff;
+  box-shadow: var(--h2t-shadow-sm);
 
   &.btn--disabled {
-    --bg-color: var(--theme-elevation-200);
-    --color: var(--theme-elevation-600);
+    --bg-color: var(--theme-elevation-150);
+    --color: var(--theme-elevation-400);
     --hover-bg: var(--bg-color);
     --hover-color: var(--color);
+    box-shadow: none;
   }
 }
 
-// Header and side navigation
-.app-header {
-  border-bottom: 1px solid var(--theme-elevation-100);
-  background: var(--theme-elevation-0);
+.btn--style-secondary {
+  --bg-color: var(--theme-elevation-0);
+  --hover-bg: var(--theme-elevation-100);
+  --color: var(--theme-elevation-800);
+  --hover-color: var(--theme-elevation-900);
+  box-shadow:
+    inset 0 0 0 1px var(--h2t-border),
+    var(--h2t-shadow-sm);
 }
 
+// ---------- Inputs ----------
+.field-type input:not([type='checkbox']):not([type='radio']),
+.field-type textarea,
+.react-select .rs__control {
+  border-color: var(--h2t-border);
+  box-shadow: var(--h2t-shadow-sm);
+}
+
+.field-type input:not([type='checkbox']):not([type='radio']):focus,
+.field-type textarea:focus,
+.react-select .rs__control--is-focused {
+  border-color: var(--h2t-brand);
+  box-shadow: 0 0 0 3px var(--h2t-ring);
+  outline: none;
+}
+
+// ---------- Header ----------
+.app-header {
+  border-bottom: 1px solid var(--h2t-border);
+  background: var(--theme-bg);
+}
+
+// ---------- Sidebar ----------
 .nav {
-  background: var(--theme-elevation-0);
+  border-right: 1px solid var(--h2t-border);
+  background: var(--h2t-sidebar-bg);
+}
+
+.nav-group__toggle {
+  margin-bottom: 4px;
+  color: var(--theme-elevation-400);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
 }
 
 .nav__link {
+  width: 100%;
+  padding: 6px 10px;
   border-radius: var(--style-radius-s);
-  font-weight: 600;
+  color: var(--theme-elevation-600);
+  font-size: 0.875rem;
+  font-weight: 500;
+  line-height: 1.5;
+  transition:
+    background-color 0.15s ease,
+    color 0.15s ease;
 
-  &:hover {
-    color: var(--h2t-brand);
+  &:hover,
+  &:focus-visible {
+    background: var(--theme-elevation-100);
+    color: var(--theme-elevation-900);
     text-decoration: none;
   }
 }
 
-.nav__link-indicator {
-  width: 3px;
-  background: var(--h2t-brand);
-}
-
+// Active item: filled pill instead of Payload's side bar indicator
 .nav__link:has(.nav__link-indicator) {
-  color: var(--h2t-brand);
+  padding-left: 10px;
+  background: var(--theme-elevation-0);
+  box-shadow:
+    inset 0 0 0 1px var(--h2t-border),
+    var(--h2t-shadow-sm);
+  color: var(--theme-elevation-900);
+  font-weight: 600;
 }
 
-// Dashboard cards
+.nav__link-indicator {
+  display: none;
+}
+
+// ---------- Tables (list views) ----------
+.table {
+  border: 1px solid var(--h2t-border);
+  border-radius: var(--style-radius-l);
+  overflow: hidden;
+
+  thead {
+    background: var(--theme-elevation-50);
+    color: var(--theme-elevation-500);
+
+    th {
+      font-size: 0.8125rem;
+      font-weight: 500;
+    }
+  }
+
+  tbody tr {
+    border-top: 1px solid var(--h2t-border);
+    transition: background-color 0.15s ease;
+
+    &:nth-child(odd) {
+      background: transparent;
+    }
+
+    &:hover {
+      background: var(--theme-elevation-50);
+    }
+  }
+}
+
+// ---------- Cards, collapsibles, popups ----------
 .card {
-  border-radius: var(--style-radius-m);
+  border: 1px solid var(--h2t-border);
+  border-radius: var(--style-radius-l);
+  background: var(--theme-elevation-0);
+  box-shadow: var(--h2t-shadow-sm);
   transition:
     border-color 0.15s ease,
     box-shadow 0.15s ease;
 
   &:hover {
-    border-color: var(--h2t-brand);
-    box-shadow: 0 6px 18px rgb(21 131 240 / 0.12);
+    border-color: var(--theme-elevation-250);
+    box-shadow: 0 4px 12px rgb(0 0 0 / 0.06);
   }
 }
 
-// Login / create-first-user screen
+.collapsible {
+  border-radius: var(--style-radius-m);
+}
+
+.popup__content {
+  border: 1px solid var(--h2t-border);
+  border-radius: var(--style-radius-m);
+  box-shadow: 0 8px 24px rgb(0 0 0 / 0.08);
+}
+
+// ---------- Login / create-first-user ----------
 .template-minimal {
   background:
-    radial-gradient(circle at 15% 10%, rgb(21 131 240 / 0.18), transparent 45%),
-    radial-gradient(circle at 85% 90%, rgb(255 122 26 / 0.16), transparent 45%),
-    var(--theme-bg);
+    radial-gradient(circle at 20% 0%, rgb(21 131 240 / 0.1), transparent 40%),
+    radial-gradient(circle at 80% 100%, rgb(255 122 26 / 0.08), transparent 40%),
+    var(--theme-elevation-50);
+}
+
+.template-minimal__wrap {
+  padding: calc(var(--base) * 2);
+  border: 1px solid var(--h2t-border);
+  border-radius: var(--style-radius-l);
+  background: var(--theme-elevation-0);
+  box-shadow: 0 10px 30px rgb(0 0 0 / 0.06);
 }
 
 ::selection {
-  background: rgb(21 131 240 / 0.25);
+  background: var(--h2t-ring);
 }

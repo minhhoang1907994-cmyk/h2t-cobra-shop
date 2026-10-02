@@ -54,7 +54,7 @@ src/
 ├── collections/       # Products/, Categories.ts, Media.ts, Users/
 ├── SiteSettings/      # Global config
 ├── WebDeploy/         # Global ẩn web-deploy + endpoint gọi Render Deploy Hook
-├── components/        # WebDeployStatus (nút "Cập nhật website" trên header), AdminBrand (logo admin), DashboardNavLink (link "Bảng điều khiển" đầu menu trái)
+├── components/        # WebDeployStatus (nút "Cập nhật website" trên header), AdminBrand (logo admin), DashboardNavLink (link "Bảng điều khiển" đầu menu trái), Dashboard (thay Dashboard mặc định). Theme admin kiểu shadcn/ui trong `app/(payload)/custom.scss`
 ├── hooks/             # markWebChanged (afterChange/afterDelete)
 ├── access/, fields/defaultLexical.ts, plugins/index.ts (seo + s3Storage), utilities/
 ├── migrations/        # Migration commit kèm mỗi thay đổi schema

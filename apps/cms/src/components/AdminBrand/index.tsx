@@ -8,7 +8,13 @@ const LOGO_SRC = '/brand/logo-square.webp'
 // Login / create-first-user screen
 export const AdminLogo = () => (
   <div className="admin-brand-logo">
-    <Image alt="H2T Cobra" className="admin-brand-logo__image" height={96} src={LOGO_SRC} width={96} />
+    <Image
+      alt="H2T Cobra"
+      className="admin-brand-logo__image"
+      height={96}
+      src={LOGO_SRC}
+      width={96}
+    />
     <div>
       <div className="admin-brand-logo__name">H2T Cobra</div>
       <div className="admin-brand-logo__tagline">Quản trị nội dung website</div>

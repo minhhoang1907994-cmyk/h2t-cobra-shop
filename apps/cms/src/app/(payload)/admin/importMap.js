@@ -23,6 +23,7 @@ import { AdminIcon as AdminIcon_185d6ccbdba3821d35293b1570e8d361 } from '../../.
 import { AdminLogo as AdminLogo_185d6ccbdba3821d35293b1570e8d361 } from '../../../components/AdminBrand'
 import { WebDeployStatus as WebDeployStatus_abf02373de83457717a7092954393f22 } from '../../../components/WebDeployStatus'
 import { DashboardNavLink as DashboardNavLink_77ac04268210385bfd3e07c6c763f3ac } from '../../../components/DashboardNavLink'
+import { Dashboard as Dashboard_9a680279bc487e655cb510fd8d9dadff } from '../../../components/Dashboard'
 import { CollectionCards as CollectionCards_f9c02e79a4aed9a3924487c0cd4cafb1 } from '@payloadcms/next/rsc'
 import { S3ClientUploadHandler as S3ClientUploadHandler_f97aa6c64367fa259c5bc0567239ef24 } from '@payloadcms/storage-s3/client'
 
@@ -53,6 +54,7 @@ export const importMap = {
   "/components/AdminBrand#AdminLogo": AdminLogo_185d6ccbdba3821d35293b1570e8d361,
   "/components/WebDeployStatus#WebDeployStatus": WebDeployStatus_abf02373de83457717a7092954393f22,
   "/components/DashboardNavLink#DashboardNavLink": DashboardNavLink_77ac04268210385bfd3e07c6c763f3ac,
+  "/components/Dashboard#Dashboard": Dashboard_9a680279bc487e655cb510fd8d9dadff,
   "@payloadcms/next/rsc#CollectionCards": CollectionCards_f9c02e79a4aed9a3924487c0cd4cafb1,
   "@payloadcms/storage-s3/client#S3ClientUploadHandler": S3ClientUploadHandler_f97aa6c64367fa259c5bc0567239ef24
 }
