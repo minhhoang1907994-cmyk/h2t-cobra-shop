@@ -11,6 +11,7 @@ import { Media } from './collections/Media'
 import { Products } from './collections/Products'
 import { Users } from './collections/Users'
 import { SiteSettings } from './SiteSettings/config'
+import { WebDeploy } from './WebDeploy/config'
 import { plugins } from './plugins'
 import { defaultLexical } from '@/fields/defaultLexical'
 import { getServerSideURL } from './utilities/getURL'
@@ -20,6 +21,9 @@ const dirname = path.dirname(filename)
 
 export default buildConfig({
   admin: {
+    components: {
+      beforeDashboard: ['/components/WebDeployPanel#WebDeployPanel'],
+    },
     importMap: {
       baseDir: path.resolve(dirname),
     },
@@ -41,7 +45,7 @@ export default buildConfig({
   }),
   collections: [Products, Categories, Media, Users],
   cors: [getServerSideURL()].filter(Boolean),
-  globals: [SiteSettings],
+  globals: [SiteSettings, WebDeploy],
   plugins,
   secret: process.env.PAYLOAD_SECRET,
   sharp,

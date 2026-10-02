@@ -12,7 +12,7 @@ repo
 └── apps/web   Next.js 16 `output: 'export'` — HTML tĩnh               → Render Static Site (free, không ngủ)
 ```
 - `web` lấy dữ liệu **lúc build** qua REST API của `cms` (`apps/web/src/lib/cms.ts`, có retry vì CMS có thể đang ngủ). Không có server runtime.
-- Admin publish/sửa/xóa sản phẩm, danh mục, Cài đặt chung → hook `apps/cms/src/hooks/triggerWebDeploy.ts` gọi `WEB_DEPLOY_HOOK_URL` (Render Deploy Hook) → web build lại (vài phút).
+- Admin publish/sửa/xóa sản phẩm, danh mục, Cài đặt chung → hook `apps/cms/src/hooks/markWebChanged.ts` chỉ ghi `lastChangedAt` vào global ẩn `web-deploy` (KHÔNG tự build). Admin bấm nút "Cập nhật website" ở đầu Dashboard (`components/WebDeployPanel`) → `POST /api/globals/web-deploy/deploy` (`apps/cms/src/WebDeploy/config.ts`) gọi `WEB_DEPLOY_HOOK_URL` (Render Deploy Hook) → web build lại (vài phút). Mục đích: gom nhiều lần sửa vào 1 lần build.
 - Ảnh: B2 **private** bucket (quyết định giữ private vì public tốn phí). CMS phục vụ ảnh qua `/api/media/file/...`. Lúc build, `apps/web/scripts/download-media.mjs` tải toàn bộ ảnh (gốc + sizes) về `apps/web/public/media/`, và `lib/cms.ts` đổi URL ảnh thành `/media/<file>` → web tĩnh tự phục vụ ảnh, không phụ thuộc CMS khi khách truy cập.
 - Types dùng chung: web import `@cms/payload-types` (→ `apps/cms/src/payload-types.ts`), dùng `import type`. Module `payload` trong web là shim rỗng (`apps/web/src/types/payload-shim.d.ts`).
 
@@ -53,7 +53,9 @@ src/
 ├── app/(payload)/     # Admin + REST/GraphQL do Payload sinh (không sửa tay). "/" redirect → /admin
 ├── collections/       # Products/, Categories.ts, Media.ts, Users/
 ├── SiteSettings/      # Global config
-├── hooks/             # triggerWebDeploy (afterChange/afterDelete)
+├── WebDeploy/         # Global ẩn web-deploy + endpoint gọi Render Deploy Hook
+├── components/        # WebDeployPanel (nút "Cập nhật website" trên Dashboard)
+├── hooks/             # markWebChanged (afterChange/afterDelete)
 ├── access/, fields/defaultLexical.ts, plugins/index.ts (seo + s3Storage), utilities/
 ├── migrations/        # Migration commit kèm mỗi thay đổi schema
 ├── payload.config.ts  # i18n: vi (mặc định), en

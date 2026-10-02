@@ -2,7 +2,7 @@ import type { CollectionConfig } from 'payload'
 
 import { anyone } from '../access/anyone'
 import { authenticated } from '../access/authenticated'
-import { deployWebAfterChange, deployWebAfterDelete } from '../hooks/triggerWebDeploy'
+import { markWebChangedAfterChange, markWebChangedAfterDelete } from '../hooks/markWebChanged'
 import { slugField } from 'payload'
 
 export const Categories: CollectionConfig = {
@@ -50,7 +50,7 @@ export const Categories: CollectionConfig = {
     }),
   ],
   hooks: {
-    afterChange: [deployWebAfterChange],
-    afterDelete: [deployWebAfterDelete],
+    afterChange: [markWebChangedAfterChange],
+    afterDelete: [markWebChangedAfterDelete],
   },
 }

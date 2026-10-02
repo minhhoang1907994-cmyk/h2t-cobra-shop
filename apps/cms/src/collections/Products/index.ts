@@ -10,7 +10,7 @@ import {
 
 import { authenticated } from '../../access/authenticated'
 import { authenticatedOrPublished } from '../../access/authenticatedOrPublished'
-import { deployWebAfterChange, deployWebAfterDelete } from '../../hooks/triggerWebDeploy'
+import { markWebChangedAfterChange, markWebChangedAfterDelete } from '../../hooks/markWebChanged'
 import { validateHexColor, validateHttpsUrl } from '../../utilities/validateUrl'
 
 import {
@@ -300,8 +300,8 @@ export const Products: CollectionConfig<'products'> = {
     slugField(),
   ],
   hooks: {
-    afterChange: [deployWebAfterChange],
-    afterDelete: [deployWebAfterDelete],
+    afterChange: [markWebChangedAfterChange],
+    afterDelete: [markWebChangedAfterDelete],
   },
   versions: {
     drafts: true,

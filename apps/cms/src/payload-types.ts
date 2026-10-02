@@ -99,9 +99,11 @@ export interface Config {
   fallbackLocale: null;
   globals: {
     'site-settings': SiteSetting;
+    'web-deploy': WebDeploy;
   };
   globalsSelect: {
     'site-settings': SiteSettingsSelect<false> | SiteSettingsSelect<true>;
+    'web-deploy': WebDeploySelect<false> | WebDeploySelect<true>;
   };
   locale: null;
   widgets: {
@@ -749,6 +751,17 @@ export interface SiteSetting {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "web-deploy".
+ */
+export interface WebDeploy {
+  id: number;
+  lastChangedAt?: string | null;
+  lastDeployRequestedAt?: string | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "site-settings_select".
  */
 export interface SiteSettingsSelect<T extends boolean = true> {
@@ -773,6 +786,17 @@ export interface SiteSettingsSelect<T extends boolean = true> {
   phone?: T;
   zalo?: T;
   address?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "web-deploy_select".
+ */
+export interface WebDeploySelect<T extends boolean = true> {
+  lastChangedAt?: T;
+  lastDeployRequestedAt?: T;
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;

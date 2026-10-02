@@ -1,7 +1,7 @@
 import type { GlobalConfig } from 'payload'
 
 import { authenticated } from '@/access/authenticated'
-import { deployWebAfterGlobalChange } from '@/hooks/triggerWebDeploy'
+import { markWebChangedAfterGlobalChange } from '@/hooks/markWebChanged'
 import { validateHttpsUrl } from '@/utilities/validateUrl'
 
 export const SiteSettings: GlobalConfig = {
@@ -158,6 +158,6 @@ export const SiteSettings: GlobalConfig = {
     },
   ],
   hooks: {
-    afterChange: [deployWebAfterGlobalChange],
+    afterChange: [markWebChangedAfterGlobalChange],
   },
 }
