@@ -1,0 +1,33 @@
+.admin-brand-logo {
+  display: flex;
+  align-items: center;
+  gap: var(--base);
+
+  &__image {
+    width: 72px;
+    height: 72px;
+    border-radius: 18px;
+    box-shadow: 0 8px 24px rgb(11 61 140 / 0.25);
+  }
+
+  &__name {
+    font-size: 1.75rem;
+    font-weight: 800;
+    line-height: 1.2;
+    background: linear-gradient(90deg, var(--h2t-brand), #3b9cff 45%, var(--h2t-accent));
+    background-clip: text;
+    color: transparent;
+  }
+
+  &__tagline {
+    color: var(--theme-elevation-500);
+    font-weight: 600;
+  }
+}
+
+.admin-brand-icon {
+  display: block;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+}

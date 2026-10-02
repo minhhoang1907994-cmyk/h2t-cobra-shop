@@ -22,7 +22,15 @@ const dirname = path.dirname(filename)
 export default buildConfig({
   admin: {
     components: {
-      beforeDashboard: ['/components/WebDeployPanel#WebDeployPanel'],
+      actions: ['/components/WebDeployStatus#WebDeployStatus'],
+      beforeNavLinks: ['/components/DashboardNavLink#DashboardNavLink'],
+      graphics: {
+        Icon: '/components/AdminBrand#AdminIcon',
+        Logo: '/components/AdminBrand#AdminLogo',
+      },
+    },
+    meta: {
+      titleSuffix: ' | H2T Cobra',
     },
     importMap: {
       baseDir: path.resolve(dirname),

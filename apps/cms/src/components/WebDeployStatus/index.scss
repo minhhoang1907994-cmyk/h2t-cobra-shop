@@ -1,0 +1,58 @@
+.web-deploy-status {
+  display: flex;
+  align-items: center;
+  gap: calc(var(--base) * 0.5);
+
+  &__badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 2px 10px;
+    border-radius: 999px;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    line-height: 1.6;
+    white-space: nowrap;
+    cursor: default;
+
+    &::before {
+      content: '';
+      flex-shrink: 0;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: currentColor;
+    }
+
+    &--pending {
+      background: var(--theme-warning-100);
+      color: var(--theme-warning-750);
+
+      &::before {
+        animation: web-deploy-status-pulse 1.6s ease-in-out infinite;
+      }
+    }
+
+    &--synced {
+      background: var(--theme-success-100);
+      color: var(--theme-success-750);
+    }
+  }
+
+  // Header actions get narrow on small screens: keep only the status dot
+  @media (max-width: 1024px) {
+    &__badge {
+      padding: 6px;
+    }
+
+    &__label {
+      display: none;
+    }
+  }
+}
+
+@keyframes web-deploy-status-pulse {
+  50% {
+    opacity: 0.35;
+  }
+}

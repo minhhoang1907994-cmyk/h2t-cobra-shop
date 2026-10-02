@@ -1,0 +1,117 @@
+// H2T Cobra admin theme: brand colors of the web site (apps/web/src/app/globals.css)
+// applied on top of Payload's design tokens. Kept outside `@layer payload-default`
+// so these rules win over Payload's defaults.
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800&display=swap');
+
+:root {
+  --h2t-brand: #1583f0;
+  --h2t-brand-dark: #0b3d8c;
+  --h2t-accent: #ff7a1a;
+
+  --font-body: 'Nunito', system-ui, -apple-system, 'Segoe UI', sans-serif;
+
+  // Navy-tinted neutral scale (instead of Payload's plain gray). Payload builds both the
+  // light and dark themes from this scale, so the dark theme becomes a deep navy.
+  --color-base-0: #ffffff;
+  --color-base-50: #f4f8fd;
+  --color-base-100: #e8f0fa;
+  --color-base-150: #d9e4f2;
+  --color-base-200: #c6d4e7;
+  --color-base-250: #b2c3da;
+  --color-base-300: #9db1cc;
+  --color-base-350: #889fbd;
+  --color-base-400: #758dad;
+  --color-base-450: #637c9c;
+  --color-base-500: #546c8b;
+  --color-base-550: #475d7a;
+  --color-base-600: #3c5069;
+  --color-base-650: #31435a;
+  --color-base-700: #28384c;
+  --color-base-750: #1f2d3f;
+  --color-base-800: #172334;
+  --color-base-850: #111b2a;
+  --color-base-900: #0b1320;
+  --color-base-950: #070d17;
+  --color-base-1000: #03070d;
+
+  --style-radius-s: 6px;
+  --style-radius-m: 10px;
+  --style-radius-l: 14px;
+}
+
+html[data-theme='light'] {
+  --theme-bg: var(--color-base-50);
+
+  .card {
+    background: var(--theme-elevation-0);
+  }
+}
+
+// Primary actions (Save, Publish, Create new...) use the brand blue
+.btn--style-primary {
+  --color: #ffffff;
+  --bg-color: var(--h2t-brand);
+  --hover-bg: var(--h2t-brand-dark);
+  --hover-color: #ffffff;
+
+  &.btn--disabled {
+    --bg-color: var(--theme-elevation-200);
+    --color: var(--theme-elevation-600);
+    --hover-bg: var(--bg-color);
+    --hover-color: var(--color);
+  }
+}
+
+// Header and side navigation
+.app-header {
+  border-bottom: 1px solid var(--theme-elevation-100);
+  background: var(--theme-elevation-0);
+}
+
+.nav {
+  background: var(--theme-elevation-0);
+}
+
+.nav__link {
+  border-radius: var(--style-radius-s);
+  font-weight: 600;
+
+  &:hover {
+    color: var(--h2t-brand);
+    text-decoration: none;
+  }
+}
+
+.nav__link-indicator {
+  width: 3px;
+  background: var(--h2t-brand);
+}
+
+.nav__link:has(.nav__link-indicator) {
+  color: var(--h2t-brand);
+}
+
+// Dashboard cards
+.card {
+  border-radius: var(--style-radius-m);
+  transition:
+    border-color 0.15s ease,
+    box-shadow 0.15s ease;
+
+  &:hover {
+    border-color: var(--h2t-brand);
+    box-shadow: 0 6px 18px rgb(21 131 240 / 0.12);
+  }
+}
+
+// Login / create-first-user screen
+.template-minimal {
+  background:
+    radial-gradient(circle at 15% 10%, rgb(21 131 240 / 0.18), transparent 45%),
+    radial-gradient(circle at 85% 90%, rgb(255 122 26 / 0.16), transparent 45%),
+    var(--theme-bg);
+}
+
+::selection {
+  background: rgb(21 131 240 / 0.25);
+}
